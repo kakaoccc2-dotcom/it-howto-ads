@@ -7,7 +7,7 @@ tags:
   - Wi-Fi
   - 接続
   - インターネットなし
-updated: 2026-08-28
+updated: 2026-09-09
 draft: false
 ---
 
@@ -71,7 +71,7 @@ iPhone 側の話は別記事です。ここでは Android 10 以降の標準設�
 2. **設定** → **ネットワークとインターネット** → **プライベートDNS** をいったん **自動** に戻す。
 3. VPNアプリを使っている場合は切断し、常時接続VPNもオフにする。
 
-PC で同じ回線が使えるなら、DNS 側の切り分けは [DNSサーバーに問題があります](/articles/windows-dns-server-problem/) が近いです。
+PC で同じ回線が使えるなら、まず [Wi-Fiは繋がるがインターネットに出られない](/articles/wifi-connected-no-internet/) で家全体か PC だけかを分け、名前だけ失敗するなら [DNSサーバーに問題があります](/articles/windows-dns-server-problem/) が近いです。
 
 ### 4. MACアドレスのランダム化を切ってみる
 
