@@ -19,7 +19,7 @@ npm run dev
 | `npm run build` | 静的書き出し（`dist/`） |
 | `npm run preview` | ビルド結果の確認 |
 
-本番 URL（canonical / sitemap / robots / OG）は `astro.config.mjs` の `site` です。デプロイ前に `PUBLIC_SITE_URL` を実ドメインへ変えてください。雛形は `.env.example` にあります。
+本番 URL（canonical / sitemap / robots / OG）は `astro.config.mjs` の `site` です。任意の `PUBLIC_SITE_URL`（絶対 URL）があればそれを使い、無ければ Vercel のデプロイホスト、最後に `https://example.com` へフォールバックします。空文字や相対パスは無視するので、カスタムドメイン用の環境変数がなくても `astro build` は通ります。
 
 Vercel へ出すときは、このリポジトリの `vercel.json` どおり **Astro / `npm run build` / 出力 `dist`** の静的ホスティングで足ります（Hobby 向け。サーバーレス用の `@astrojs/vercel` は使いません）。Git 連携済みなら、マージ後にダッシュボードの **Redeploy** だけで再ビルドできます。
 
