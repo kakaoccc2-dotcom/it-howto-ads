@@ -61,6 +61,7 @@ draft: false
 - `/sitemap-index.xml` `@astrojs/sitemap`
 - `/robots.txt` サイトマップ URL つき
 - `/ads.txt` AdSense の seller 行（`pub-3011430865071926`）
+- `/googlea3a8cdeac65efa38.html` Google Search Console の HTML ファイル確認（消さない）
 
 SEO: 各ページの `title` / `description`、canonical、OGP、記事の `TechArticle` JSON-LD。
 
