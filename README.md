@@ -130,11 +130,11 @@ Astro の `PUBLIC_*` は **ビルド時** に HTML へ埋め込まれます。�
 
 **A. 静的テンプレート（このリポジトリの既定）**
 
-`public/ads.txt` はコメントのみです。承認後に AdSense の行へ置き換えてデプロイします。プレビューに誤った publisher ID が出ません。
+`public/ads.txt` はコメントのみです。承認後に AdSense の行へ置き換えてデプロイします。プレビューに誤った publisher ID が出ません。UTF-8 BOM 付きで、Vercel では `vercel.json` により `Content-Type: text/plain; charset=utf-8` です。
 
 **B. ビルド時に環境変数から生成する（任意）**
 
-`src/lib/adsense.ts` の `adsTxtLine()` は、有効な `PUBLIC_ADSENSE_CLIENT` があるときだけ `google.com, pub-…, DIRECT, …` を返します（プレースホルダは `undefined`）。`src/pages/ads.txt.ts` のようなエンドポイントからその 1 行を返す実装に切り替えられます。既定では有効にしていません。切り替えるなら `public/ads.txt` と生成ルートが同じ URL でぶつからないようにしてください。
+`src/lib/adsense.ts` の `adsTxtLine()` は、有効な `PUBLIC_ADSENSE_CLIENT` があるときだけ `google.com, pub-…, DIRECT, …` を返します（プレースホルダは `undefined`）。自動生成する場合は `public/ads.txt` を外し、`src/pages/ads.txt.ts` からその 1 行を `text/plain; charset=utf-8` で返すようにします（`public/` とページが同じ `ads.txt` だと Astro は public 側を優先してページをスキップします）。既定では有効にしていません。
 
 ### 仕組み（実装メモ）
 

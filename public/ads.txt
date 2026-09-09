@@ -1,31 +1,31 @@
-# ads.txt — 手順ナビ (it-howto-ads)
+﻿# ads.txt — 手順ナビ (it-howto-ads)
 #
 # このファイルはプレースホルダです。Google AdSense の掲載が承認されるまで、
 # 有効な publisher ID は書きません（推測や仮の ca-pub / pub- 番号は禁止）。
 #
 # ---------------------------------------------------------------------------
-# 承認後にやること（推奨: 静的テンプレートを差し替える）
+# After approval — paste AdSense's ads.txt line (recommended static approach)
+# 承認後にやること（静的テンプレートを差し替える）
 # ---------------------------------------------------------------------------
-# 1. AdSense 管理画面でサイトの ads.txt 行をコピーする
-#    （サイト → ads.txt、または アカウント → ads.txt）
-# 2. 下のコメント例を、AdSense が表示した 1 行に置き換える
-# 3. このファイルをコミットしてデプロイする（または Vercel で再ビルド）
+# 1. Copy the ads.txt record from the AdSense UI
+#    (Sites → ads.txt, or Account → ads.txt)
+# 2. Replace this commented file with that exact one line (comments may stay)
+# 3. Commit and deploy, or Redeploy on Vercel
 #
-# AdSense が出す行の形（数字は必ず管理画面の値。ここに記入しない）:
+# Shape of the line AdSense shows (digits come from the UI only):
 #
 #   google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
 #
-# 注意:
-# - ads.txt では pub-… を使います（タグの ca-pub-… から ca- を除いた値）。
-# - 末尾の f08c47fec0942fa0 は Google 共通の認証局 ID で、全パブリッシャー同じです。
-# - コメント行（# で始まる行）はクローラに無視されます。
+# Notes:
+# - ads.txt uses pub-… (strip ca- from the ca-pub-… client id).
+# - f08c47fec0942fa0 is Google's shared certification authority ID.
+# - Lines starting with # are ignored by crawlers.
 #
 # ---------------------------------------------------------------------------
-# 別案: ビルド時に環境変数から生成する
+# Alternate: generate from PUBLIC_ADSENSE_CLIENT at build
 # ---------------------------------------------------------------------------
-# PUBLIC_ADSENSE_CLIENT（ca-pub-数字）がセットされているときだけ
-# src/lib/adsense.ts の adsTxtLine() で上記 1 行を出す方法もあります。
-# このリポジトリはプレビューに誤った ID を出さないよう、静的テンプレートを優先しています。
-# 手順は README の「Google AdSense」を見てください。
+# src/lib/adsense.ts adsTxtLine() can emit the google.com record when the
+# client id is ca-pub- plus digits. This repo keeps the static template so
+# previews never publish a publisher ID. See README 「Google AdSense」.
 #
-# （承認前は、このファイルに google.com のレコードを追加しないでください）
+# （承認前は google.com のレコードを追加しないでください）
