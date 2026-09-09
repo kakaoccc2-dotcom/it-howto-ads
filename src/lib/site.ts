@@ -9,7 +9,7 @@ export const siteMeta = {
 
 export function absoluteUrl(path: string, site: URL | string | undefined): string {
   const origin =
-    typeof site === 'string' ? site : (site?.origin ?? 'https://tejun-navi.example.com');
+    typeof site === 'string' ? site : (site?.origin ?? 'https://example.com');
   const normalized = path.startsWith('/') ? path : `/${path}`;
   return new URL(normalized, origin.endsWith('/') ? origin : `${origin}/`).href;
 }

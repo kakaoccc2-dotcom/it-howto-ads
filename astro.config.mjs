@@ -1,12 +1,15 @@
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
+import { resolveSiteUrl } from './src/lib/resolve-site-url.mjs';
 
 /**
  * Production URL used for canonical links, Open Graph, sitemap, and robots.txt.
- * Change this before deploying (Vercel project URL or custom domain).
+ * Prefer PUBLIC_SITE_URL when it is a real absolute URL; otherwise use Vercel's
+ * deployment host or https://example.com so `astro build` never sees an empty
+ * or relative `site` value.
  */
-const site = process.env.PUBLIC_SITE_URL ?? 'https://tejun-navi.example.com';
+const site = resolveSiteUrl();
 
 export default defineConfig({
   site,
