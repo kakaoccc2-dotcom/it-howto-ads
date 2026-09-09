@@ -1,0 +1,51 @@
+---
+import ArticleCard from '../../components/ArticleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getArticlesByCategory } from '../../lib/articles';
+import { categoryList, getCategory } from '../../lib/categories';
+import { siteMeta } from '../../lib/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export function getStaticPaths() {
+  return categoryList.map((category) => ({
+    params: { category: category.id },
+  }));
+}
+
+const { category: categoryId } = Astro.params;
+const category = getCategory(categoryId ?? '');
+
+if (!category) {
+  throw new Error(`Unknown category: ${categoryId}`);
+}
+
+const articles = await getArticlesByCategory(category.id);
+---
+
+<BaseLayout
+  title={category.name}
+  description={`${category.name}の設定・トラブル手順 | ${siteMeta.name}。${category.description}`}
+>
+  <Breadcrumbs
+    items={[
+      { href: '/', label: 'ホーム' },
+      { href: '/categories/', label: 'カテゴリ' },
+      { label: category.name },
+    ]}
+  />
+  <header class="hero">
+    <h1>{category.name}</h1>
+    <p>{category.description}</p>
+  </header>
+  {
+    articles.length > 0 ? (
+      <div class="article-list">
+        {articles.map((article) => (
+          <ArticleCard article={article} />
+        ))}
+      </div>
+    ) : (
+      <p class="muted">このカテゴリの公開記事はまだありません。</p>
+    )
+  }
+</BaseLayout>

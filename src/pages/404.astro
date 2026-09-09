@@ -1,0 +1,24 @@
+---
+import { siteMeta } from '../lib/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="ページが見つかりません"
+  description="指定されたページは見つかりませんでした。"
+  noindex
+>
+  <section class="not-found">
+    <h1>ページが見つかりません</h1>
+    <p class="muted">
+      アドレスが古い、またはまだ公開していない記事の可能性があります。{siteMeta.name}のトップから探してください。
+    </p>
+    <p>
+      <a href="/">ホームへ戻る</a>
+      {' · '}
+      <a href="/articles/">記事一覧</a>
+      {' · '}
+      <a href="/categories/">カテゴリ</a>
+    </p>
+  </section>
+</BaseLayout>

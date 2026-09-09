@@ -1,0 +1,99 @@
+---
+import { render } from 'astro:content';
+import AdSlot from '../components/AdSlot.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import {
+  articlePath,
+  getPublishedArticles,
+  relatedArticles,
+  type Article,
+} from '../lib/articles';
+import { categories } from '../lib/categories';
+import { formatDate, siteMeta } from '../lib/site';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+const category = categories[article.data.category];
+const pool = await getPublishedArticles();
+const related = relatedArticles(article, pool);
+const url = new URL(articlePath(article), Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: article.data.title,
+  description: article.data.description,
+  dateModified: article.data.updated.toISOString(),
+  inLanguage: 'ja',
+  mainEntityOfPage: url,
+  author: { '@type': 'Organization', name: siteMeta.name },
+  publisher: { '@type': 'Organization', name: siteMeta.name },
+};
+---
+
+<BaseLayout
+  title={article.data.title}
+  description={article.data.description}
+  ogType="article"
+  updated={article.data.updated}
+>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <Breadcrumbs
+    items={[
+      { href: '/', label: 'ホーム' },
+      { href: '/categories/', label: 'カテゴリ' },
+      { href: category.href, label: category.name },
+      { label: article.data.title },
+    ]}
+  />
+
+  <header class="article-header">
+    <div class="meta">
+      <a class="chip" href={category.href}>{category.name}</a>
+      <time datetime={article.data.updated.toISOString()}>
+        最終更新 {formatDate(article.data.updated)}
+      </time>
+    </div>
+    <h1>{article.data.title}</h1>
+    <p class="muted">{article.data.description}</p>
+    {
+      article.data.tags.length > 0 && (
+        <div class="meta">
+          {article.data.tags.map((tag) => (
+            <span class="tag">#{tag}</span>
+          ))}
+        </div>
+      )
+    }
+  </header>
+
+  <AdSlot placement="top" />
+
+  <article class="prose">
+    <Content />
+  </article>
+
+  <AdSlot placement="mid" />
+
+  {
+    related.length > 0 && (
+      <section class="related" aria-labelledby="related-heading">
+        <h2 id="related-heading">関連する手順</h2>
+        <div class="article-list">
+          {related.map((item) => (
+            <ArticleCard article={item} heading="h3" />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <AdSlot placement="bottom" />
+</BaseLayout>

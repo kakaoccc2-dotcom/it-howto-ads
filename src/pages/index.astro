@@ -1,0 +1,41 @@
+---
+import ArticleCard from '../components/ArticleCard.astro';
+import { getPublishedArticles } from '../lib/articles';
+import { categoryList } from '../lib/categories';
+import { siteMeta } from '../lib/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const articles = await getPublishedArticles();
+const latest = articles.slice(0, 6);
+---
+
+<BaseLayout title={siteMeta.name} description={siteMeta.description}>
+  <section class="hero">
+    <h1>設定とトラブルを、焦らず手順で。</h1>
+    <p>
+      {siteMeta.name}は、Windows・スマホ・ネットワーク・周辺機器の「いま起きていること」から、確認順と直し方をまとめた日本語の手順サイトです。広告枠は用意していますが、本文は手順そのものです。
+    </p>
+  </section>
+
+  <h2 class="section-title">カテゴリから探す</h2>
+  <div class="category-grid">
+    {
+      categoryList.map((category) => (
+        <a class="panel" href={category.href}>
+          <h2>{category.name}</h2>
+          <p>{category.description}</p>
+        </a>
+      ))
+    }
+  </div>
+
+  <h2 class="section-title">新着の手順</h2>
+  <div class="article-list">
+    {latest.map((article) => <ArticleCard article={article} />)}
+  </div>
+  <p style="margin-top: 1rem;">
+    <a href="/articles/">記事一覧を見る</a>
+    {' · '}
+    <a href="/categories/">カテゴリ一覧</a>
+  </p>
+</BaseLayout>

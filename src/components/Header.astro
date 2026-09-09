@@ -1,0 +1,40 @@
+---
+import { categoryList } from '../lib/categories';
+import { siteMeta } from '../lib/site';
+
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '' } = Astro.props;
+
+const links = [
+  { href: '/', label: 'ホーム' },
+  ...categoryList.map((category) => ({ href: category.href, label: category.shortName })),
+  { href: '/articles/', label: '記事一覧' },
+];
+
+function isCurrent(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath === href || currentPath.startsWith(href);
+}
+---
+
+<a class="skip-link" href="#main">本文へスキップ</a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="/">
+      <span class="brand__name">{siteMeta.name}</span>
+      <span class="brand__tagline">{siteMeta.tagline}</span>
+    </a>
+    <nav class="nav" aria-label="メインメニュー">
+      {
+        links.map((link) => (
+          <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>

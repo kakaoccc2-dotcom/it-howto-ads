@@ -1,0 +1,28 @@
+---
+import ArticleCard from '../../components/ArticleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getPublishedArticles } from '../../lib/articles';
+import { siteMeta } from '../../lib/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articles = await getPublishedArticles();
+---
+
+<BaseLayout
+  title="記事一覧"
+  description={`${siteMeta.name}の設定・トラブル手順を新しい順に並べています。`}
+>
+  <Breadcrumbs
+    items={[
+      { href: '/', label: 'ホーム' },
+      { label: '記事一覧' },
+    ]}
+  />
+  <header class="hero">
+    <h1>記事一覧</h1>
+    <p>公開中の手順は {articles.length} 件です。カテゴリやタグからも探せます。</p>
+  </header>
+  <div class="article-list">
+    {articles.map((article) => <ArticleCard article={article} />)}
+  </div>
+</BaseLayout>

@@ -1,0 +1,19 @@
+# dependencies
+node_modules/
+
+# build
+dist/
+.astro/
+
+# env / editor
+.env
+.env.*
+!.env.example
+.DS_Store
+.vscode/
+.idea/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

@@ -1,0 +1,27 @@
+---
+import type { Article } from '../lib/articles';
+import { articlePath } from '../lib/articles';
+import { categories } from '../lib/categories';
+import { formatDate } from '../lib/site';
+
+interface Props {
+  article: Article;
+  heading?: 'h2' | 'h3';
+}
+
+const { article, heading: Heading = 'h2' } = Astro.props;
+const category = categories[article.data.category];
+---
+
+<article class="panel article-card">
+  <div class="meta">
+    <a class="chip" href={category.href}>{category.name}</a>
+    <time datetime={article.data.updated.toISOString()}>
+      更新 {formatDate(article.data.updated)}
+    </time>
+  </div>
+  <Heading>
+    <a href={articlePath(article)}>{article.data.title}</a>
+  </Heading>
+  <p>{article.data.description}</p>
+</article>
