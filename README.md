@@ -1,6 +1,6 @@
 # 手順ナビ（it-howto-ads）
 
-Windows・スマホ・ネットワーク・周辺機器の **設定とトラブル手順** を日本語で出す、静的サイトです。本文は Markdown、ビルドは Astro（SSG）。記事レイアウトに `AdSlot` があり、**環境変数が揃ったときだけ** Google AdSense のタグを出します。未設定のビルドでは無害な「準備中」枠のままです。
+Windows・スマホ・ネットワーク・周辺機器の **設定とトラブル手順** を日本語で出す、静的サイトです。本文は Markdown、ビルドは Astro（SSG）。Google AdSense のクライアント ID（既定 `ca-pub-3011430865071926`）で head に公式スクリプトを出します。記事のディスプレイ枠はスロット ID があるときだけユニットタグになります。
 
 ## ローカルで動かす
 
@@ -59,11 +59,11 @@ draft: false
 - `/404` 日本語の 404
 - `/sitemap-index.xml` `@astrojs/sitemap`
 - `/robots.txt` サイトマップ URL つき
-- `/ads.txt` AdSense 承認後に差し替えるテンプレート（コメントのみ）
+- `/ads.txt` AdSense の seller 行（`pub-3011430865071926`）
 
 SEO: 各ページの `title` / `description`、canonical、OGP、記事の `TechArticle` JSON-LD。
 
-広告: `src/components/AdSlot.astro` を `src/layouts/ArticleLayout.astro` が top / mid / bottom で呼び出します。`PUBLIC_ADSENSE_CLIENT` が未設定、またはプレースホルダのときは配信スクリプトを出しません。Amazon アソシエイトとは別です。
+広告: `src/components/AdSlot.astro` を `src/layouts/ArticleLayout.astro` が top / mid / bottom で呼び出します。head の `adsbygoogle.js` は既定クライアントで入ります。枠 ID がない位置はユニット未設定のスタブです。Amazon アソシエイトとは別です。
 
 ## Amazonアソシエイト
 
@@ -79,71 +79,52 @@ Vercel でタグを変える場合は、Project → Settings → Environment Var
 
 ## Google AdSense
 
-承認前は **配信タグを有効にしない**でください。仮の `ca-pub-` 番号をリポジトリや Vercel に入れないこと。未設定のままだと広告枠はスタブ表示です（ポリシー上のフェイク広告にもなりません）。
+既定のパブリッシャー ID は `ca-pub-3011430865071926` です（`src/lib/adsense.ts` の `DEFAULT_ADSENSE_CLIENT`）。`PUBLIC_ADSENSE_CLIENT` が空ならこの値を使い、有効な `ca-pub-` + 数字ならそちらを優先します。プレビューでスクリプトを止めたいときだけ、`ca-pub-` 以外（例: `off`）を入れてください。
 
-申請時にサイト側で揃えてあるもの:
+各ページの `<head>` には公式タグが出ます。
 
-- 記事コンテンツ（手順記事）
-- [このサイトについて / 運営者情報](src/pages/about.astro)（`/about/`）
-- [プライバシーポリシー](src/pages/privacy.astro)（`/privacy/`、広告・アフィリエイト Cookie の説明）
-- `public/ads.txt`（コメントのテンプレート。承認前に publisher ID は書いていません）
+```html
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3011430865071926" crossorigin="anonymous"></script>
+```
 
-### 承認後に貼るもの
+あわせて `<meta name="google-adsense-account" content="ca-pub-3011430865071926">` です。これでサイト確認と Auto ads（AdSense 側で有効にした場合）が動きます。
 
-AdSense 管理画面から **画面に出た値をそのまま** 使います（推測しない）。
+**ディスプレイ広告ユニット（`data-ad-slot`）はまだありません。** AdSense でユニットを作ったあと、枠 ID（数字）を次の変数に入れて Redeploy してください。空の `ins` を出さないため、枠 ID がない位置は「ユニット未設定」スタブのままです。
 
-| 貼る場所 | 管理画面でコピーするもの |
-|---|---|
-| Vercel の `PUBLIC_ADSENSE_CLIENT` | パブリッシャー ID（`ca-pub-` で始まる値） |
-| 任意: `PUBLIC_ADSENSE_SLOT_TOP` / `_MID` / `_BOTTOM` | ディスプレイ広告ユニットの枠 ID（数字） |
-| `public/ads.txt` | サイト用 ads.txt の **1 行**（`google.com, pub-…, DIRECT, …`） |
+| 変数 | 既定 | 用途 |
+|---|---|---|
+| `PUBLIC_ADSENSE_CLIENT` | `ca-pub-3011430865071926` | head のスクリプト。Vercel に同値を置いてもよいが、未設定ならコードの既定で足りる |
+| `PUBLIC_ADSENSE_SLOT_TOP` | （なし） | 記事上部ユニット |
+| `PUBLIC_ADSENSE_SLOT_MID` | （なし） | 記事中部ユニット |
+| `PUBLIC_ADSENSE_SLOT_BOTTOM` | （なし） | 記事下部ユニット |
 
-`ads.txt` の `pub-` はタグの `ca-pub-` から `ca-` を除いた値です。末尾の認証局 ID は Google 共通なので、必ず AdSense が表示した行を使ってください。
+`public/ads.txt` は [Google の ads.txt 形式](https://support.google.com/adsense/answer/7532444) です。
 
-### Vercel で環境変数を入れて再デプロイする
+```
+google.com, pub-3011430865071926, DIRECT, f08c47fec0942fa0
+```
 
-Astro の `PUBLIC_*` は **ビルド時** に HTML へ埋め込まれます。変数を足しただけでは本番は変わりません。
+`pub-` は `ca-pub-` から `ca-` を除いた値。末尾の `f08c47fec0942fa0` は Google 共通の認証局 ID です。
 
-1. [AdSense](https://www.google.com/adsense/) でサイトが承認されたことを確認する。
-2. Vercel → 対象プロジェクト → **Settings → Environment Variables**。
-3. 次を追加する（Production / Preview のどちらに入れるかは運用に合わせる。本番だけ有効にするなら Production のみ）。
+### 枠 ID を後から足す（Vercel）
 
-   | Name | Value |
-   |---|---|
-   | `PUBLIC_ADSENSE_CLIENT` | AdSense の `ca-pub-` + 数字 |
-   | `PUBLIC_ADSENSE_SLOT_TOP` | （任意）上部ユニットの枠 ID |
-   | `PUBLIC_ADSENSE_SLOT_MID` | （任意）中部ユニットの枠 ID |
-   | `PUBLIC_ADSENSE_SLOT_BOTTOM` | （任意）下部ユニットの枠 ID |
+Astro の `PUBLIC_*` は **ビルド時** に埋め込まれます。
 
-4. `public/ads.txt` を、AdSense が提示した行に差し替えてコミットする（推奨。下記の生成案でも可）。
-5. **Deployments → 最新 Production → Redeploy**（または ads.txt のコミットを main にマージして自動デプロイ）。「Use existing Build Cache」はオフにする。
-6. 公開 URL で次を確認する。
-   - ページソースに `adsbygoogle.js?client=ca-pub-…` がある（クライアント ID を入れた場合）
-   - 枠 ID も入れた記事ページで `data-ad-slot` がプレースホルダではない
-   - `https://<本番ドメイン>/ads.txt` が AdSense の 1 行になっている
+1. AdSense でディスプレイユニットを作り、枠 ID をコピーする。
+2. Vercel → Settings → Environment Variables に `PUBLIC_ADSENSE_SLOT_TOP` などを追加する。
+3. **Redeploy**（Use existing Build Cache はオフ）。
+4. 記事 HTML で `data-ad-slot` がプレースホルダではなく数字になっていることを確認する。
 
-クライアント ID だけ入れて枠 ID を空にした場合、head の AdSense スクリプト（Auto ads / サイト確認用）は出ますが、記事の `AdSlot` はスタブのままです。空の `ins` を出してポリシー違反にしないためです。手動ユニットを出すなら枠 ID もセットしてください。
-
-ローカル確認は `.env` に同じ変数を書き、`npm run build && npm run preview` です。`.env.example` に名前だけあります。**数字のダミー ID は書かないでください。**
-
-### ads.txt の 2 通り
-
-**A. 静的テンプレート（このリポジトリの既定）**
-
-`public/ads.txt` はコメントのみです。承認後に AdSense の行へ置き換えてデプロイします。プレビューに誤った publisher ID が出ません。UTF-8 BOM 付きで、Vercel では `vercel.json` により `Content-Type: text/plain; charset=utf-8` です。
-
-**B. ビルド時に環境変数から生成する（任意）**
-
-`src/lib/adsense.ts` の `adsTxtLine()` は、有効な `PUBLIC_ADSENSE_CLIENT` があるときだけ `google.com, pub-…, DIRECT, …` を返します（プレースホルダは `undefined`）。自動生成する場合は `public/ads.txt` を外し、`src/pages/ads.txt.ts` からその 1 行を `text/plain; charset=utf-8` で返すようにします（`public/` とページが同じ `ads.txt` だと Astro は public 側を優先してページをスキップします）。既定では有効にしていません。
+クライアント ID を Vercel に置く必要はありません（ハードコード既定で同じ値になります）。別アカウントに切り替えるときだけ `PUBLIC_ADSENSE_CLIENT` を上書きしてください。
 
 ### 仕組み（実装メモ）
 
 | 変数 | 未設定時 | 有効な値がビルドに入ったとき |
 |---|---|---|
-| `PUBLIC_ADSENSE_CLIENT` | スタブ枠。`adsbygoogle.js` なし | `<head>` に `google-adsense-account` と公式スクリプト |
+| `PUBLIC_ADSENSE_CLIENT` | 既定 `ca-pub-3011430865071926` で head スクリプト | その値で head スクリプト |
 | `PUBLIC_ADSENSE_SLOT_*` | その位置はスタブ | 対応する `AdSlot` が `ins.adsbygoogle` + `push` |
 
-`ca-pub-xxxxxxxx` のようなプレースホルダや、数字以外を含む値は無効扱いです。他社の広告ネットワークは入れていません。
+他社の広告ネットワークは入れていません。
 
 ## 主なソース
 
@@ -151,8 +132,8 @@ Astro の `PUBLIC_*` は **ビルド時** に HTML へ埋め込まれます。�
 src/
   content.config.ts          # 記事コレクション（Zod）
   content/articles/          # Markdown 本文
-  components/AdSlot.astro            # 広告枠（env 未設定時はスタブ）
-  components/AdSenseHead.astro       # AdSense スクリプト（client が有効なときだけ）
+  components/AdSlot.astro            # 枠IDがあるときだけユニット。なければスタブ
+  components/AdSenseHead.astro       # 既定 ca-pub で adsbygoogle.js
   components/AffiliateProduct.astro  # Amazon検索リンク（任意）
   layouts/ArticleLayout.astro
   lib/adsense.ts                     # AdSense env の検証と ads.txt 行の組み立て

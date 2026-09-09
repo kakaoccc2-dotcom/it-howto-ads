@@ -1,5 +1,8 @@
 export type AdPlacement = 'top' | 'mid' | 'bottom';
 
+/** Default AdSense client. Override with PUBLIC_ADSENSE_CLIENT (empty → this value). */
+export const DEFAULT_ADSENSE_CLIENT = 'ca-pub-3011430865071926';
+
 /** Official AdSense client form. Placeholders like ca-pub-xxxxxxxx never match. */
 const CLIENT_RE = /^ca-pub-\d{8,}$/;
 /** Display ad unit IDs from the AdSense UI are numeric. */
@@ -35,13 +38,15 @@ function readPublicEnv(name: keyof ImportMetaEnv): string | undefined {
 
 /**
  * Returns a live AdSense client (`ca-pub-` + digits) or `undefined`.
- * Unset / empty / example values keep the site in stub mode (no ad requests).
+ * Unset / empty env uses {@link DEFAULT_ADSENSE_CLIENT}. An explicit
+ * placeholder or non-`ca-pub-` value disables the script (preview override).
  */
 export function getAdsenseClient(
   envClient: string | undefined = import.meta.env.PUBLIC_ADSENSE_CLIENT,
 ): string | undefined {
-  const value = envClient?.trim();
-  if (!value || looksLikePlaceholder(value) || !CLIENT_RE.test(value)) {
+  const trimmed = envClient?.trim();
+  const value = trimmed ? trimmed : DEFAULT_ADSENSE_CLIENT;
+  if (looksLikePlaceholder(value) || !CLIENT_RE.test(value)) {
     return undefined;
   }
   return value;
@@ -66,11 +71,8 @@ export function adsenseScriptSrc(client: string): string {
 
 /**
  * Build the ads.txt record from a `ca-pub-…` client id.
- * ads.txt uses `pub-…` (the `ca-` prefix is stripped). Returns undefined for
- * placeholders so preview builds never emit a fake publisher line.
- *
- * This helper is for an optional generate-from-env approach; the repo ships a
- * static commented `public/ads.txt` by default.
+ * ads.txt uses `pub-…` (the `ca-` prefix is stripped). Official AdSense format:
+ * `google.com, pub-…, DIRECT, f08c47fec0942fa0`.
  */
 export function adsTxtLine(client: string | undefined): string | undefined {
   const resolved = getAdsenseClient(client);

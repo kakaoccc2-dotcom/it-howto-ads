@@ -1,31 +1,5 @@
-﻿# ads.txt — 手順ナビ (it-howto-ads)
-#
-# このファイルはプレースホルダです。Google AdSense の掲載が承認されるまで、
-# 有効な publisher ID は書きません（推測や仮の ca-pub / pub- 番号は禁止）。
-#
-# ---------------------------------------------------------------------------
-# After approval — paste AdSense's ads.txt line (recommended static approach)
-# 承認後にやること（静的テンプレートを差し替える）
-# ---------------------------------------------------------------------------
-# 1. Copy the ads.txt record from the AdSense UI
-#    (Sites → ads.txt, or Account → ads.txt)
-# 2. Replace this commented file with that exact one line (comments may stay)
-# 3. Commit and deploy, or Redeploy on Vercel
-#
-# Shape of the line AdSense shows (digits come from the UI only):
-#
-#   google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
-#
-# Notes:
-# - ads.txt uses pub-… (strip ca- from the ca-pub-… client id).
-# - f08c47fec0942fa0 is Google's shared certification authority ID.
-# - Lines starting with # are ignored by crawlers.
-#
-# ---------------------------------------------------------------------------
-# Alternate: generate from PUBLIC_ADSENSE_CLIENT at build
-# ---------------------------------------------------------------------------
-# src/lib/adsense.ts adsTxtLine() can emit the google.com record when the
-# client id is ca-pub- plus digits. This repo keeps the static template so
-# previews never publish a publisher ID. See README 「Google AdSense」.
-#
-# （承認前は google.com のレコードを追加しないでください）
+﻿# ads.txt for 手順ナビ (it-howto-ads)
+# Google AdSense — https://support.google.com/adsense/answer/7532444
+# Use pub-… here (not the ca-pub-… client used in the page script).
+# Certification authority ID f08c47fec0942fa0 is Google's shared value.
+google.com, pub-3011430865071926, DIRECT, f08c47fec0942fa0

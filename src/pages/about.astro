@@ -48,8 +48,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <h2>広告について</h2>
     <p>
-      記事レイアウトには広告枠（AdSlot）があります。Google AdSense
-      のクライアント ID と枠 ID がビルド時の環境変数で渡されたときだけ配信タグを出します。未設定のプレビューやローカルビルドでは、無害な「準備中」の枠だけを表示します。
+      各ページの head に Google AdSense の公式スクリプト（サイト確認 / Auto ads）を置いています。記事のディスプレイ枠（AdSlot）は、枠 ID（
+      <code>PUBLIC_ADSENSE_SLOT_*</code>
+      ）があるときだけユニットタグを出します。枠 ID がない位置は「ユニット未設定」のスタブです。
     </p>
     <p>
       一部の手順記事には、切り分けに使う周辺機器の Amazon.co.jp 検索リンクを置いています。<strong>Amazonのアソシエイトとして、{siteMeta.name}は適格販売により収入を得ています。</strong>アフィリエイトリンクには nofollow と sponsored を付けています。未確認の個別レビューは書きません。

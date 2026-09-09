@@ -45,10 +45,25 @@ const isLive = Boolean(client && slotId);
       data-ad-slot="placeholder"
       data-placement={placement}
       data-slot-id={slotIdProp}
-      aria-label={`広告枠（${labels[placement]}・準備中）`}
+      aria-label={
+        client
+          ? `広告枠（${labels[placement]}・ユニット未設定）`
+          : `広告枠（${labels[placement]}・準備中）`
+      }
     >
-      <span class="ad-slot__label">広告枠（準備中）</span>
-      <span>{labels[placement]} · 配信スクリプトは未導入</span>
+      {
+        client ? (
+          <>
+            <span class="ad-slot__label">広告枠（ユニット未設定）</span>
+            <span>{labels[placement]} · 枠ID未設定（head の AdSense スクリプトのみ）</span>
+          </>
+        ) : (
+          <>
+            <span class="ad-slot__label">広告枠（準備中）</span>
+            <span>{labels[placement]} · 配信スクリプトは未導入</span>
+          </>
+        )
+      }
     </aside>
   )
 }
