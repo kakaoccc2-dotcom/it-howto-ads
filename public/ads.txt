@@ -1,0 +1,5 @@
+﻿# ads.txt for 手順ナビ (it-howto-ads)
+# Google AdSense — https://support.google.com/adsense/answer/7532444
+# Use pub-… here (not the ca-pub-… client used in the page script).
+# Certification authority ID f08c47fec0942fa0 is Google's shared value.
+google.com, pub-3011430865071926, DIRECT, f08c47fec0942fa0

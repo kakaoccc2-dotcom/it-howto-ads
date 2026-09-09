@@ -7,7 +7,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="このサイトについて"
-  description={`${siteMeta.name}の運営方針です。広告枠は後から差し込めるようにしていますが、本文は実作業向けの手順だけを置きます。`}
+  description={`${siteMeta.name}の運営方針と運営者情報です。ITの設定・トラブル手順を日本語で案内します。`}
 >
   <Breadcrumbs
     items={[
@@ -25,12 +25,44 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <li>書くこと: 再現しやすい症状、よくある原因、画面名つきの手順、失敗したあとの次の手。</li>
       <li>書かないこと: キーワードだけの薄いページ、根拠のない「必ず直る」断言、有料ソフトの押し売り。</li>
     </ul>
+
+    <h2 id="operator">運営者情報</h2>
+    <ul>
+      <li>サイト名: {siteMeta.name}（it-howto-ads）</li>
+      <li>目的: Windows・スマホ・ネットワーク・周辺機器の設定とトラブルを、家庭・個人利用向けに手順で案内すること</li>
+      <li>運営: 個人（メーカーや OS 公式のサポート窓口ではありません）</li>
+      <li>
+        連絡先: GitHub の Issues（
+        <a href={siteMeta.githubIssuesUrl} rel="noopener noreferrer">{siteMeta.githubIssuesUrl}</a>
+        ）
+      </li>
+      <li>
+        ソース:
+        {' '}
+        <a href={siteMeta.githubUrl} rel="noopener noreferrer">{siteMeta.githubUrl}</a>
+      </li>
+    </ul>
+    <p>
+      メールアドレスを後から公開する場合は、この欄に追記します。営業・宣伝メールは想定していません。
+    </p>
+
     <h2>広告について</h2>
     <p>
-      記事レイアウトには広告枠（AdSlot）を置いてありますが、広告ネットワークのスクリプトは入れていません。
+      各ページの head に Google AdSense の公式スクリプト（サイト確認 / Auto ads）を置いています。記事のディスプレイ枠（AdSlot）は、枠 ID（
+      <code>PUBLIC_ADSENSE_SLOT_*</code>
+      ）があるときだけユニットタグを出します。枠 ID がない位置は「ユニット未設定」のスタブです。
     </p>
     <p>
       一部の手順記事には、切り分けに使う周辺機器の Amazon.co.jp 検索リンクを置いています。<strong>Amazonのアソシエイトとして、{siteMeta.name}は適格販売により収入を得ています。</strong>アフィリエイトリンクには nofollow と sponsored を付けています。未確認の個別レビューは書きません。
+    </p>
+    <p>
+      Cookie や広告の取り扱いは <a href="/privacy/">プライバシーポリシー</a> を見てください。
+    </p>
+    <h2>免責事項</h2>
+    <p>
+      手順は一般的な案内であり、結果を保証するものではありません。作業で生じた損害などについては
+      <a href="/disclaimer/">免責事項</a>
+      に書いています。
     </p>
     <h2>カテゴリ</h2>
     <ul>

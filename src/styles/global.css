@@ -324,6 +324,13 @@ a.panel:hover {
   line-height: 1.4;
 }
 
+.disclaimer-note {
+  max-width: var(--measure);
+  margin: -0.5rem 0 1.15rem;
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+
 .prose {
   max-width: var(--measure);
 }
@@ -420,6 +427,18 @@ a.panel:hover {
 
 .ad-slot__label {
   letter-spacing: 0.08em;
+}
+
+.ad-slot--live {
+  border-style: solid;
+  background: transparent;
+  padding: 0;
+  overflow: hidden;
+}
+
+.ad-slot--live .adsbygoogle {
+  display: block;
+  width: 100%;
 }
 
 .affiliate-block {

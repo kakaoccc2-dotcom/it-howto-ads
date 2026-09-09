@@ -1,6 +1,6 @@
 # 手順ナビ（it-howto-ads）
 
-Windows・スマホ・ネットワーク・周辺機器の **設定とトラブル手順** を日本語で出す、静的サイトです。本文は Markdown、ビルドは Astro（SSG）。あとから AdSense などの広告スクリプトを差し込めるよう、記事レイアウトに `AdSlot` の枠だけ置いてあります（**配信タグは未導入**）。
+Windows・スマホ・ネットワーク・周辺機器の **設定とトラブル手順** を日本語で出す、静的サイトです。本文は Markdown、ビルドは Astro（SSG）。Google AdSense のクライアント ID（既定 `ca-pub-3011430865071926`）で head に公式スクリプトを出します。記事のディスプレイ枠はスロット ID があるときだけユニットタグになります。
 
 ## ローカルで動かす
 
@@ -54,14 +54,18 @@ draft: false
 - `/categories/<id>/` Windows / スマホ / ネットワーク / 周辺機器
 - `/articles/` 全記事
 - `/articles/<slug>/` 記事（AdSlot 上・中・下）
-- `/about/` 方針
+- `/about/` このサイトについて・運営者情報
+- `/privacy/` プライバシーポリシー
+- `/disclaimer/` 免責事項
 - `/404` 日本語の 404
 - `/sitemap-index.xml` `@astrojs/sitemap`
 - `/robots.txt` サイトマップ URL つき
+- `/ads.txt` AdSense の seller 行（`pub-3011430865071926`）
+- `/googlea3a8cdeac65efa38.html` Google Search Console の HTML ファイル確認（消さない）
 
 SEO: 各ページの `title` / `description`、canonical、OGP、記事の `TechArticle` JSON-LD。
 
-広告: `src/components/AdSlot.astro` を `src/layouts/ArticleLayout.astro` が top / mid / bottom で呼び出します。ネットワーク用 script は置かないでください。
+広告: `src/components/AdSlot.astro` を `src/layouts/ArticleLayout.astro` が top / mid / bottom で呼び出します。head の `adsbygoogle.js` は既定クライアントで入ります。枠 ID がない位置はユニット未設定のスタブです。Amazon アソシエイトとは別です。
 
 ## Amazonアソシエイト
 
@@ -75,17 +79,71 @@ SEO: 各ページの `title` / `description`、canonical、OGP、記事の `Tech
 
 Vercel でタグを変える場合は、Project → Settings → Environment Variables に `PUBLIC_AMAZON_ASSOCIATE_TAG` を追加し、**再ビルド（Redeploy）** してください。静的書き出しなので、変数だけ変えても既存 HTML は更新されません。
 
+## Google AdSense
+
+既定のパブリッシャー ID は `ca-pub-3011430865071926` です（`src/lib/adsense.ts` の `DEFAULT_ADSENSE_CLIENT`）。`PUBLIC_ADSENSE_CLIENT` が空ならこの値を使い、有効な `ca-pub-` + 数字ならそちらを優先します。プレビューでスクリプトを止めたいときだけ、`ca-pub-` 以外（例: `off`）を入れてください。
+
+各ページの `<head>` には公式タグが出ます。
+
+```html
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3011430865071926" crossorigin="anonymous"></script>
+```
+
+あわせて `<meta name="google-adsense-account" content="ca-pub-3011430865071926">` です。これでサイト確認と Auto ads（AdSense 側で有効にした場合）が動きます。
+
+**ディスプレイ広告ユニット（`data-ad-slot`）はまだありません。** AdSense でユニットを作ったあと、枠 ID（数字）を次の変数に入れて Redeploy してください。空の `ins` を出さないため、枠 ID がない位置は「ユニット未設定」スタブのままです。
+
+| 変数 | 既定 | 用途 |
+|---|---|---|
+| `PUBLIC_ADSENSE_CLIENT` | `ca-pub-3011430865071926` | head のスクリプト。Vercel に同値を置いてもよいが、未設定ならコードの既定で足りる |
+| `PUBLIC_ADSENSE_SLOT_TOP` | （なし） | 記事上部ユニット |
+| `PUBLIC_ADSENSE_SLOT_MID` | （なし） | 記事中部ユニット |
+| `PUBLIC_ADSENSE_SLOT_BOTTOM` | （なし） | 記事下部ユニット |
+
+`public/ads.txt` は [Google の ads.txt 形式](https://support.google.com/adsense/answer/7532444) です。
+
+```
+google.com, pub-3011430865071926, DIRECT, f08c47fec0942fa0
+```
+
+`pub-` は `ca-pub-` から `ca-` を除いた値。末尾の `f08c47fec0942fa0` は Google 共通の認証局 ID です。
+
+### 枠 ID を後から足す（Vercel）
+
+Astro の `PUBLIC_*` は **ビルド時** に埋め込まれます。
+
+1. AdSense でディスプレイユニットを作り、枠 ID をコピーする。
+2. Vercel → Settings → Environment Variables に `PUBLIC_ADSENSE_SLOT_TOP` などを追加する。
+3. **Redeploy**（Use existing Build Cache はオフ）。
+4. 記事 HTML で `data-ad-slot` がプレースホルダではなく数字になっていることを確認する。
+
+クライアント ID を Vercel に置く必要はありません（ハードコード既定で同じ値になります）。別アカウントに切り替えるときだけ `PUBLIC_ADSENSE_CLIENT` を上書きしてください。
+
+### 仕組み（実装メモ）
+
+| 変数 | 未設定時 | 有効な値がビルドに入ったとき |
+|---|---|---|
+| `PUBLIC_ADSENSE_CLIENT` | 既定 `ca-pub-3011430865071926` で head スクリプト | その値で head スクリプト |
+| `PUBLIC_ADSENSE_SLOT_*` | その位置はスタブ | 対応する `AdSlot` が `ins.adsbygoogle` + `push` |
+
+他社の広告ネットワークは入れていません。
+
 ## 主なソース
 
 ```
 src/
   content.config.ts          # 記事コレクション（Zod）
   content/articles/          # Markdown 本文
-  components/AdSlot.astro            # 広告枠スタブ
+  components/AdSlot.astro            # 枠IDがあるときだけユニット。なければスタブ
+  components/AdSenseHead.astro       # 既定 ca-pub で adsbygoogle.js
   components/AffiliateProduct.astro  # Amazon検索リンク（任意）
   layouts/ArticleLayout.astro
+  lib/adsense.ts                     # AdSense env の検証と ads.txt 行の組み立て
   lib/amazon.ts                      # amazon.co.jp の tag= 付きURL
   lib/categories.ts                  # カテゴリ定義
+  pages/about.astro                  # このサイトについて / 運営者情報
+  pages/privacy.astro                # プライバシーポリシー
+  pages/disclaimer.astro             # 免責事項
   pages/                     # ルート
 ```
 

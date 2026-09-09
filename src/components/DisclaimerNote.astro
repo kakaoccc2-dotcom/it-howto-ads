@@ -1,0 +1,13 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<p class:list={['muted', 'disclaimer-note', className]}>
+  手順は一般的な案内であり、結果を保証するものではありません。作業はご自身の判断と責任で行ってください。詳しくは
+  <a href="/disclaimer/">免責事項</a>
+  をご覧ください。
+</p>
