@@ -15,6 +15,10 @@ export function toAbsoluteHttpUrl(value) {
   if (typeof value !== 'string') return undefined;
   const trimmed = value.trim();
   if (SKIP_VALUES.has(trimmed)) return undefined;
+  // Paths are not origins (`/blog` would otherwise become https://blog).
+  if (trimmed.startsWith('/') || trimmed.startsWith('./') || trimmed.startsWith('../')) {
+    return undefined;
+  }
 
   const candidate = /^https?:\/\//i.test(trimmed)
     ? trimmed
@@ -25,11 +29,20 @@ export function toAbsoluteHttpUrl(value) {
   try {
     const url = new URL(candidate);
     if (url.protocol !== 'http:' && url.protocol !== 'https:') return undefined;
-    if (!url.hostname) return undefined;
+    if (!isPlausibleHostname(url.hostname)) return undefined;
     return url.href.replace(/\/$/, '');
   } catch {
     return undefined;
   }
+}
+
+/** @param {string} hostname */
+function isPlausibleHostname(hostname) {
+  if (!hostname) return false;
+  const host = hostname.replace(/^\[|\]$/g, '');
+  if (host === 'localhost') return true;
+  if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(host)) return true;
+  return host.includes('.');
 }
 
 /**
