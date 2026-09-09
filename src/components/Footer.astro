@@ -1,4 +1,5 @@
 ---
+import AffiliateDisclosure from './AffiliateDisclosure.astro';
 import { categoryList } from '../lib/categories';
 import { siteMeta } from '../lib/site';
 ---
@@ -15,6 +16,7 @@ import { siteMeta } from '../lib/site';
     <p class="muted">
       {siteMeta.name}は、家庭や個人利用向けの設定・トラブル手順をまとめたサイトです。手順は機種やOSの版によって違うことがあります。重要なデータは作業の前に控えてください。
     </p>
+    <AffiliateDisclosure />
     <p class="muted">&copy; {new Date().getFullYear()} {siteMeta.name}</p>
   </div>
 </footer>

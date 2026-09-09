@@ -91,6 +91,19 @@
 
 コンポーネントを本文に埋めたい場合は拡張子を `.mdx` にします。frontmatter の規則は同じです。まずは Markdown のままで問題ありません。
 
+Amazon の関連リンクが手順の切り分けに自然なときだけ、本文に `AffiliateProduct` を1つ置いてください（押し売りにしない）。`search` に amazon.co.jp の検索語を渡します。未確認の ASIN は書かないでください。
+
+```mdx
+<AffiliateProduct
+  title="HDMIケーブル"
+  why="入力切替のあとにケーブル不良を疑う段階なら。"
+  search="HDMIケーブル 2.0"
+  cta="Amazon.co.jpでHDMIケーブルを探す"
+/>
+```
+
+コンポーネントは `ArticleLayout` から MDX に渡します。タグは `PUBLIC_AMAZON_ASSOCIATE_TAG`（未設定時は `wasshoi22451-22`）です。
+
 ## チェックリスト（公開前）
 
 - [ ] `draft: false`

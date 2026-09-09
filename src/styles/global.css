@@ -422,6 +422,57 @@ a.panel:hover {
   letter-spacing: 0.08em;
 }
 
+.affiliate-block {
+  margin: 1.75rem 0;
+  padding: 1rem 1.1rem 0.95rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.prose .affiliate-block h3,
+.affiliate-block__title {
+  margin: 0 0 0.4rem;
+  font-size: 1.02rem;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.affiliate-block__kicker {
+  margin: 0 0 0.3rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.affiliate-block__why {
+  margin: 0 0 0.7rem;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.75;
+}
+
+.affiliate-block__cta {
+  margin: 0;
+}
+
+.affiliate-block__cta a {
+  font-weight: 600;
+}
+
+.affiliate-block__note,
+.affiliate-disclosure {
+  margin: 0.65rem 0 0;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+.site-footer .affiliate-disclosure {
+  margin: 0;
+  max-width: 40rem;
+}
+
 .related {
   max-width: var(--measure);
   margin-top: 2.4rem;
