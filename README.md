@@ -4,7 +4,7 @@ Windows・スマホ・ネットワーク・周辺機器の **設定とトラブ�
 
 ## ローカルで動かす
 
-Node.js 22 以降。
+Node.js 22.x。
 
 ```bash
 npm install
@@ -21,7 +21,7 @@ npm run dev
 
 本番 URL（canonical / sitemap / robots / OG）は `astro.config.mjs` の `site` です。デプロイ前に `PUBLIC_SITE_URL` を実ドメインへ変えてください。雛形は `.env.example` にあります。
 
-Vercel へ出すときは、フレームワークに Astro を選ぶか、ビルドコマンド `npm run build`・出力 `dist` で静的ホスティングすれば足ります。このリポジトリからデプロイ済みである必要はありません。
+Vercel へ出すときは、このリポジトリの `vercel.json` どおり **Astro / `npm run build` / 出力 `dist`** の静的ホスティングで足ります（Hobby 向け。サーバーレス用の `@astrojs/vercel` は使いません）。Git 連携済みなら、マージ後にダッシュボードの **Redeploy** だけで再ビルドできます。
 
 ## 記事の置き場とテンプレート
 
