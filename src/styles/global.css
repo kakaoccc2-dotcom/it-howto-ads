@@ -422,6 +422,18 @@ a.panel:hover {
   letter-spacing: 0.08em;
 }
 
+.ad-slot--live {
+  border-style: solid;
+  background: transparent;
+  padding: 0;
+  overflow: hidden;
+}
+
+.ad-slot--live .adsbygoogle {
+  display: block;
+  width: 100%;
+}
+
 .affiliate-block {
   margin: 1.75rem 0;
   padding: 1rem 1.1rem 0.95rem;

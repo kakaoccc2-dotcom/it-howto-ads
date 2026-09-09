@@ -75,7 +75,7 @@
 - `mid` … 本文の直後（関連記事の前）
 - `bottom` … 関連記事の後
 
-プレースホルダは `src/components/AdSlot.astro` です。`data-slot-id` を後から渡せます。量産記事側で枠を増減する必要はありません。
+プレースホルダは `src/components/AdSlot.astro` です。`PUBLIC_ADSENSE_CLIENT` と枠ごとのスロット ID がビルド時に揃ったときだけ AdSense タグを出します。記事本文に広告コードを書かないでください。量産記事側で枠を増減する必要はありません。
 
 ## カテゴリの追加
 

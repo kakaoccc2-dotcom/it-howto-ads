@@ -3,4 +3,13 @@
 interface ImportMetaEnv {
   readonly PUBLIC_AMAZON_ASSOCIATE_TAG?: string;
   readonly PUBLIC_SITE_URL?: string;
+  /** AdSense client, e.g. ca-pub- followed by digits. Unset = stub ad slots only. */
+  readonly PUBLIC_ADSENSE_CLIENT?: string;
+  readonly PUBLIC_ADSENSE_SLOT_TOP?: string;
+  readonly PUBLIC_ADSENSE_SLOT_MID?: string;
+  readonly PUBLIC_ADSENSE_SLOT_BOTTOM?: string;
+}
+
+interface Window {
+  adsbygoogle?: unknown[];
 }

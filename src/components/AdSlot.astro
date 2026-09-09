@@ -1,7 +1,9 @@
 ---
+import { getAdsenseClient, getAdsenseSlotId, type AdPlacement } from '../lib/adsense';
+
 interface Props {
-  placement: 'top' | 'mid' | 'bottom';
-  /** Future AdSense slot id. Unused until ads are wired up. */
+  placement: AdPlacement;
+  /** Optional AdSense ad unit id. Falls back to PUBLIC_ADSENSE_SLOT_* env vars. */
   slotId?: string;
 }
 
@@ -11,16 +13,42 @@ const labels = {
   bottom: '記事下部',
 } as const;
 
-const { placement, slotId } = Astro.props;
+const { placement, slotId: slotIdProp } = Astro.props;
+const client = getAdsenseClient();
+const slotId = getAdsenseSlotId(placement, slotIdProp);
+const isLive = Boolean(client && slotId);
 ---
 
-<aside
-  class="ad-slot"
-  data-ad-slot="placeholder"
-  data-placement={placement}
-  data-slot-id={slotId}
-  aria-label={`広告枠（${labels[placement]}・準備中）`}
->
-  <span class="ad-slot__label">広告枠（準備中）</span>
-  <span>{labels[placement]} · 配信スクリプトは未導入</span>
-</aside>
+{
+  isLive ? (
+    <aside
+      class="ad-slot ad-slot--live"
+      data-placement={placement}
+      data-ad-slot={slotId}
+      aria-label={`広告（${labels[placement]}）`}
+    >
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={client}
+        data-ad-slot={slotId}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+      <script is:inline define:vars={{ slotId }}>
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </aside>
+  ) : (
+    <aside
+      class="ad-slot"
+      data-ad-slot="placeholder"
+      data-placement={placement}
+      data-slot-id={slotIdProp}
+      aria-label={`広告枠（${labels[placement]}・準備中）`}
+    >
+      <span class="ad-slot__label">広告枠（準備中）</span>
+      <span>{labels[placement]} · 配信スクリプトは未導入</span>
+    </aside>
+  )
+}

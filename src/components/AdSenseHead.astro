@@ -1,0 +1,15 @@
+---
+import { adsenseScriptSrc, getAdsenseClient } from '../lib/adsense';
+
+const client = getAdsenseClient();
+const src = client ? adsenseScriptSrc(client) : '';
+---
+
+{
+  client && (
+    <>
+      <meta name="google-adsense-account" content={client} />
+      <script is:inline async src={src} crossorigin="anonymous"></script>
+    </>
+  )
+}

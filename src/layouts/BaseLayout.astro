@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import AdSenseHead from '../components/AdSenseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import { absoluteUrl, siteMeta } from '../lib/site';
@@ -47,6 +48,7 @@ const ogImage = absoluteUrl('/favicon.svg', Astro.site);
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     {updated && <meta property="article:modified_time" content={updated.toISOString()} />}
+    <AdSenseHead />
     <slot name="head" />
   </head>
   <body>

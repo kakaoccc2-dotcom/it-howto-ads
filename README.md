@@ -1,6 +1,6 @@
 # 手順ナビ（it-howto-ads）
 
-Windows・スマホ・ネットワーク・周辺機器の **設定とトラブル手順** を日本語で出す、静的サイトです。本文は Markdown、ビルドは Astro（SSG）。あとから AdSense などの広告スクリプトを差し込めるよう、記事レイアウトに `AdSlot` の枠だけ置いてあります（**配信タグは未導入**）。
+Windows・スマホ・ネットワーク・周辺機器の **設定とトラブル手順** を日本語で出す、静的サイトです。本文は Markdown、ビルドは Astro（SSG）。記事レイアウトに `AdSlot` があり、**環境変数が揃ったときだけ** Google AdSense のタグを出します。未設定のビルドでは無害な「準備中」枠のままです。
 
 ## ローカルで動かす
 
@@ -54,14 +54,16 @@ draft: false
 - `/categories/<id>/` Windows / スマホ / ネットワーク / 周辺機器
 - `/articles/` 全記事
 - `/articles/<slug>/` 記事（AdSlot 上・中・下）
-- `/about/` 方針
+- `/about/` このサイトについて・運営者情報
+- `/privacy/` プライバシーポリシー
 - `/404` 日本語の 404
 - `/sitemap-index.xml` `@astrojs/sitemap`
 - `/robots.txt` サイトマップ URL つき
+- `/ads.txt` AdSense 承認後に差し替えるテンプレート（コメントのみ）
 
 SEO: 各ページの `title` / `description`、canonical、OGP、記事の `TechArticle` JSON-LD。
 
-広告: `src/components/AdSlot.astro` を `src/layouts/ArticleLayout.astro` が top / mid / bottom で呼び出します。ネットワーク用 script は置かないでください。
+広告: `src/components/AdSlot.astro` を `src/layouts/ArticleLayout.astro` が top / mid / bottom で呼び出します。`PUBLIC_ADSENSE_CLIENT` が未設定、またはプレースホルダのときは配信スクリプトを出しません。Amazon アソシエイトとは別です。
 
 ## Amazonアソシエイト
 
@@ -75,17 +77,89 @@ SEO: 各ページの `title` / `description`、canonical、OGP、記事の `Tech
 
 Vercel でタグを変える場合は、Project → Settings → Environment Variables に `PUBLIC_AMAZON_ASSOCIATE_TAG` を追加し、**再ビルド（Redeploy）** してください。静的書き出しなので、変数だけ変えても既存 HTML は更新されません。
 
+## Google AdSense
+
+承認前は **配信タグを有効にしない**でください。仮の `ca-pub-` 番号をリポジトリや Vercel に入れないこと。未設定のままだと広告枠はスタブ表示です（ポリシー上のフェイク広告にもなりません）。
+
+申請時にサイト側で揃えてあるもの:
+
+- 記事コンテンツ（手順記事）
+- [このサイトについて / 運営者情報](src/pages/about.astro)（`/about/`）
+- [プライバシーポリシー](src/pages/privacy.astro)（`/privacy/`、広告・アフィリエイト Cookie の説明）
+- `public/ads.txt`（コメントのテンプレート。承認前に publisher ID は書いていません）
+
+### 承認後に貼るもの
+
+AdSense 管理画面から **画面に出た値をそのまま** 使います（推測しない）。
+
+| 貼る場所 | 管理画面でコピーするもの |
+|---|---|
+| Vercel の `PUBLIC_ADSENSE_CLIENT` | パブリッシャー ID（`ca-pub-` で始まる値） |
+| 任意: `PUBLIC_ADSENSE_SLOT_TOP` / `_MID` / `_BOTTOM` | ディスプレイ広告ユニットの枠 ID（数字） |
+| `public/ads.txt` | サイト用 ads.txt の **1 行**（`google.com, pub-…, DIRECT, …`） |
+
+`ads.txt` の `pub-` はタグの `ca-pub-` から `ca-` を除いた値です。末尾の認証局 ID は Google 共通なので、必ず AdSense が表示した行を使ってください。
+
+### Vercel で環境変数を入れて再デプロイする
+
+Astro の `PUBLIC_*` は **ビルド時** に HTML へ埋め込まれます。変数を足しただけでは本番は変わりません。
+
+1. [AdSense](https://www.google.com/adsense/) でサイトが承認されたことを確認する。
+2. Vercel → 対象プロジェクト → **Settings → Environment Variables**。
+3. 次を追加する（Production / Preview のどちらに入れるかは運用に合わせる。本番だけ有効にするなら Production のみ）。
+
+   | Name | Value |
+   |---|---|
+   | `PUBLIC_ADSENSE_CLIENT` | AdSense の `ca-pub-` + 数字 |
+   | `PUBLIC_ADSENSE_SLOT_TOP` | （任意）上部ユニットの枠 ID |
+   | `PUBLIC_ADSENSE_SLOT_MID` | （任意）中部ユニットの枠 ID |
+   | `PUBLIC_ADSENSE_SLOT_BOTTOM` | （任意）下部ユニットの枠 ID |
+
+4. `public/ads.txt` を、AdSense が提示した行に差し替えてコミットする（推奨。下記の生成案でも可）。
+5. **Deployments → 最新 Production → Redeploy**（または ads.txt のコミットを main にマージして自動デプロイ）。「Use existing Build Cache」はオフにする。
+6. 公開 URL で次を確認する。
+   - ページソースに `adsbygoogle.js?client=ca-pub-…` がある（クライアント ID を入れた場合）
+   - 枠 ID も入れた記事ページで `data-ad-slot` がプレースホルダではない
+   - `https://<本番ドメイン>/ads.txt` が AdSense の 1 行になっている
+
+クライアント ID だけ入れて枠 ID を空にした場合、head の AdSense スクリプト（Auto ads / サイト確認用）は出ますが、記事の `AdSlot` はスタブのままです。空の `ins` を出してポリシー違反にしないためです。手動ユニットを出すなら枠 ID もセットしてください。
+
+ローカル確認は `.env` に同じ変数を書き、`npm run build && npm run preview` です。`.env.example` に名前だけあります。**数字のダミー ID は書かないでください。**
+
+### ads.txt の 2 通り
+
+**A. 静的テンプレート（このリポジトリの既定）**
+
+`public/ads.txt` はコメントのみです。承認後に AdSense の行へ置き換えてデプロイします。プレビューに誤った publisher ID が出ません。
+
+**B. ビルド時に環境変数から生成する（任意）**
+
+`src/lib/adsense.ts` の `adsTxtLine()` は、有効な `PUBLIC_ADSENSE_CLIENT` があるときだけ `google.com, pub-…, DIRECT, …` を返します（プレースホルダは `undefined`）。`src/pages/ads.txt.ts` のようなエンドポイントからその 1 行を返す実装に切り替えられます。既定では有効にしていません。切り替えるなら `public/ads.txt` と生成ルートが同じ URL でぶつからないようにしてください。
+
+### 仕組み（実装メモ）
+
+| 変数 | 未設定時 | 有効な値がビルドに入ったとき |
+|---|---|---|
+| `PUBLIC_ADSENSE_CLIENT` | スタブ枠。`adsbygoogle.js` なし | `<head>` に `google-adsense-account` と公式スクリプト |
+| `PUBLIC_ADSENSE_SLOT_*` | その位置はスタブ | 対応する `AdSlot` が `ins.adsbygoogle` + `push` |
+
+`ca-pub-xxxxxxxx` のようなプレースホルダや、数字以外を含む値は無効扱いです。他社の広告ネットワークは入れていません。
+
 ## 主なソース
 
 ```
 src/
   content.config.ts          # 記事コレクション（Zod）
   content/articles/          # Markdown 本文
-  components/AdSlot.astro            # 広告枠スタブ
+  components/AdSlot.astro            # 広告枠（env 未設定時はスタブ）
+  components/AdSenseHead.astro       # AdSense スクリプト（client が有効なときだけ）
   components/AffiliateProduct.astro  # Amazon検索リンク（任意）
   layouts/ArticleLayout.astro
+  lib/adsense.ts                     # AdSense env の検証と ads.txt 行の組み立て
   lib/amazon.ts                      # amazon.co.jp の tag= 付きURL
   lib/categories.ts                  # カテゴリ定義
+  pages/about.astro                  # このサイトについて / 運営者情報
+  pages/privacy.astro                # プライバシーポリシー
   pages/                     # ルート
 ```
 
