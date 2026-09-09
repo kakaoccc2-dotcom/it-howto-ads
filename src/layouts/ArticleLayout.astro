@@ -4,6 +4,7 @@ import AdSlot from '../components/AdSlot.astro';
 import AffiliateProduct from '../components/AffiliateProduct.astro';
 import ArticleCard from '../components/ArticleCard.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
+import DisclaimerNote from '../components/DisclaimerNote.astro';
 import {
   articlePath,
   getPublishedArticles,
@@ -74,6 +75,8 @@ const jsonLd = {
       )
     }
   </header>
+
+  <DisclaimerNote />
 
   <AdSlot placement="top" />
 

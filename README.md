@@ -56,6 +56,7 @@ draft: false
 - `/articles/<slug>/` 記事（AdSlot 上・中・下）
 - `/about/` このサイトについて・運営者情報
 - `/privacy/` プライバシーポリシー
+- `/disclaimer/` 免責事項
 - `/404` 日本語の 404
 - `/sitemap-index.xml` `@astrojs/sitemap`
 - `/robots.txt` サイトマップ URL つき
@@ -141,6 +142,7 @@ src/
   lib/categories.ts                  # カテゴリ定義
   pages/about.astro                  # このサイトについて / 運営者情報
   pages/privacy.astro                # プライバシーポリシー
+  pages/disclaimer.astro             # 免責事項
   pages/                     # ルート
 ```
 
