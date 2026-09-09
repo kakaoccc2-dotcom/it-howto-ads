@@ -1,0 +1,20 @@
+---
+import { categoryList } from '../lib/categories';
+import { siteMeta } from '../lib/site';
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <nav class="footer-nav" aria-label="フッター">
+      <a href="/">ホーム</a>
+      <a href="/categories/">カテゴリ</a>
+      <a href="/articles/">記事一覧</a>
+      <a href="/about/">このサイトについて</a>
+      {categoryList.map((category) => <a href={category.href}>{category.name}</a>)}
+    </nav>
+    <p class="muted">
+      {siteMeta.name}は、家庭や個人利用向けの設定・トラブル手順をまとめたサイトです。手順は機種やOSの版によって違うことがあります。重要なデータは作業の前に控えてください。
+    </p>
+    <p class="muted">&copy; {new Date().getFullYear()} {siteMeta.name}</p>
+  </div>
+</footer>

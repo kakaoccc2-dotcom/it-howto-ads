@@ -1,0 +1,22 @@
+{
+  "name": "tejun-navi",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Japanese gadget/IT troubleshooting how-to site (手順ナビ)",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.0.1",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

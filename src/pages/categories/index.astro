@@ -1,0 +1,44 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getPublishedArticles } from '../../lib/articles';
+import { categoryList } from '../../lib/categories';
+import { siteMeta } from '../../lib/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articles = await getPublishedArticles();
+const counts = Object.fromEntries(
+  categoryList.map((category) => [
+    category.id,
+    articles.filter((article) => article.data.category === category.id).length,
+  ]),
+);
+---
+
+<BaseLayout
+  title="カテゴリ"
+  description={`${siteMeta.name}のカテゴリ一覧です。Windows、スマホ、ネットワーク、周辺機器から手順を選べます。`}
+>
+  <Breadcrumbs
+    items={[
+      { href: '/', label: 'ホーム' },
+      { label: 'カテゴリ' },
+    ]}
+  />
+  <header class="hero">
+    <h1>カテゴリ</h1>
+    <p>困っている対象から、手順記事を絞り込めます。</p>
+  </header>
+  <div class="category-grid">
+    {
+      categoryList.map((category) => (
+        <a class="panel" href={category.href}>
+          <h2>{category.name}</h2>
+          <p>{category.description}</p>
+          <p class="muted" style="margin-top: 0.55rem;">
+            {counts[category.id] ?? 0} 件の記事
+          </p>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

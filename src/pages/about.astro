@@ -1,0 +1,44 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { categoryList } from '../lib/categories';
+import { siteMeta } from '../lib/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="このサイトについて"
+  description={`${siteMeta.name}の運営方針です。広告枠は後から差し込めるようにしていますが、本文は実作業向けの手順だけを置きます。`}
+>
+  <Breadcrumbs
+    items={[
+      { href: '/', label: 'ホーム' },
+      { label: 'このサイトについて' },
+    ]}
+  />
+  <article class="prose">
+    <h1>このサイトについて</h1>
+    <p>
+      {siteMeta.name}は、パソコン・スマホ・周辺機器で「設定がわからない」「エラーが出た」ときに、症状から原因の見当をつけて、確認順どおりに試せる日本語の手順書です。
+    </p>
+    <h2>書くこと / 書かないこと</h2>
+    <ul>
+      <li>書くこと: 再現しやすい症状、よくある原因、画面名つきの手順、失敗したあとの次の手。</li>
+      <li>書かないこと: キーワードだけの薄いページ、根拠のない「必ず直る」断言、有料ソフトの押し売り。</li>
+    </ul>
+    <h2>広告について</h2>
+    <p>
+      記事レイアウトには広告枠（AdSlot）を置いてありますが、広告ネットワークのスクリプトは入れていません。収益化は本文が揃ってから別作業にします。
+    </p>
+    <h2>カテゴリ</h2>
+    <ul>
+      {
+        categoryList.map((category) => (
+          <li>
+            <a href={category.href}>{category.name}</a> — {category.description}
+          </li>
+        ))
+      }
+    </ul>
+    <p><a href="/articles/">記事一覧へ</a></p>
+  </article>
+</BaseLayout>

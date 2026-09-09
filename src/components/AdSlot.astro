@@ -1,0 +1,26 @@
+---
+interface Props {
+  placement: 'top' | 'mid' | 'bottom';
+  /** Future AdSense slot id. Unused until ads are wired up. */
+  slotId?: string;
+}
+
+const labels = {
+  top: '記事上部',
+  mid: '記事中盤',
+  bottom: '記事下部',
+} as const;
+
+const { placement, slotId } = Astro.props;
+---
+
+<aside
+  class="ad-slot"
+  data-ad-slot="placeholder"
+  data-placement={placement}
+  data-slot-id={slotId}
+  aria-label={`広告枠（${labels[placement]}・準備中）`}
+>
+  <span class="ad-slot__label">広告枠（準備中）</span>
+  <span>{labels[placement]} · 配信スクリプトは未導入</span>
+</aside>
