@@ -1,0 +1,42 @@
+---
+import {
+  AMAZON_AFFILIATE_REL,
+  amazonAffiliateHref,
+} from '../lib/amazon';
+
+interface Props {
+  title: string;
+  /** One or two sentences: why this category might help, not a fake review. */
+  why: string;
+  /** amazon.co.jp search keywords. Preferred when no verified ASIN exists. */
+  search?: string;
+  /** 10-character ASIN. Use only for a known product. */
+  asin?: string;
+  /** Full URL; amazon.co.jp links get the associate tag applied. */
+  href?: string;
+  cta?: string;
+}
+
+const {
+  title,
+  why,
+  search,
+  asin,
+  href,
+  cta = 'Amazon.co.jpで探す',
+} = Astro.props;
+
+const url = amazonAffiliateHref({ search, asin, href });
+---
+
+<aside class="affiliate-block" aria-label="Amazonアソシエイトの関連リンク">
+  <p class="affiliate-block__kicker">関連する周辺機器（任意）</p>
+  <h3 class="affiliate-block__title">{title}</h3>
+  <p class="affiliate-block__why">{why}</p>
+  <p class="affiliate-block__cta">
+    <a href={url} rel={AMAZON_AFFILIATE_REL} target="_blank">{cta}</a>
+  </p>
+  <p class="affiliate-block__note">
+    Amazonアソシエイトのリンクです。対象商品の購入で紹介料を受け取ることがあります。
+  </p>
+</aside>

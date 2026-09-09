@@ -1,0 +1,11 @@
+---
+import { AMAZON_ASSOCIATE_DISCLOSURE } from '../lib/amazon';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<p class:list={['affiliate-disclosure', className]}>{AMAZON_ASSOCIATE_DISCLOSURE}</p>

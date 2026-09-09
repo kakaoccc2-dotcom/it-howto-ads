@@ -63,15 +63,29 @@ SEO: 各ページの `title` / `description`、canonical、OGP、記事の `Tech
 
 広告: `src/components/AdSlot.astro` を `src/layouts/ArticleLayout.astro` が top / mid / bottom で呼び出します。ネットワーク用 script は置かないでください。
 
+## Amazonアソシエイト
+
+一部の手順記事に、切り分け用の周辺機器への **amazon.co.jp 検索リンク** を置いています（未確認の個別ASINレビューは書きません）。リンクは `src/lib/amazon.ts` が `tag=` 付きで組み立て、`src/components/AffiliateProduct.astro` が `rel="nofollow sponsored noopener"` で出します。フッターにアソシエイト参加の開示があります。
+
+トラッキング ID（アソシエイトタグ）はビルド時の環境変数です。
+
+| 変数 | 既定 | 用途 |
+|---|---|---|
+| `PUBLIC_AMAZON_ASSOCIATE_TAG` | `wasshoi22451-22` | amazon.co.jp の `tag=` |
+
+Vercel でタグを変える場合は、Project → Settings → Environment Variables に `PUBLIC_AMAZON_ASSOCIATE_TAG` を追加し、**再ビルド（Redeploy）** してください。静的書き出しなので、変数だけ変えても既存 HTML は更新されません。
+
 ## 主なソース
 
 ```
 src/
   content.config.ts          # 記事コレクション（Zod）
   content/articles/          # Markdown 本文
-  components/AdSlot.astro    # 広告枠スタブ
+  components/AdSlot.astro            # 広告枠スタブ
+  components/AffiliateProduct.astro  # Amazon検索リンク（任意）
   layouts/ArticleLayout.astro
-  lib/categories.ts          # カテゴリ定義
+  lib/amazon.ts                      # amazon.co.jp の tag= 付きURL
+  lib/categories.ts                  # カテゴリ定義
   pages/                     # ルート
 ```
 

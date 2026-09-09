@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content';
 import AdSlot from '../components/AdSlot.astro';
+import AffiliateProduct from '../components/AffiliateProduct.astro';
 import ArticleCard from '../components/ArticleCard.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import {
@@ -77,7 +78,7 @@ const jsonLd = {
   <AdSlot placement="top" />
 
   <article class="prose">
-    <Content />
+    <Content components={{ AffiliateProduct }} />
   </article>
 
   <AdSlot placement="mid" />
