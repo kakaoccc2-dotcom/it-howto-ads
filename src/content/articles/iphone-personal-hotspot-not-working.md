@@ -13,7 +13,7 @@ draft: false
 
 iPhone 側はアンテナがあるのに、ノート PC の Wi-Fi 一覧にホットスポットが出ない。つながっても「インターネットなし」。Android や Windows からは見えるが、すぐ切れる。Wi-Fi そのものが家のルーターに繋がらない話は扱いません。iPhone 単体の回線は [モバイルデータ](/articles/iphone-mobile-data-not-working/) 、家の Wi-Fi は [iPhone の Wi-Fi 手順](/articles/iphone-wifi-cannot-connect/) です。
 
-この記事は、iPhone を親機にして別の機器を乗せる **インターネット共有** です。Android を親機にする手順は機種差が大きいので、ここでは書きません。家族の iPhone では共有できるのに自分だけダメ、なら設定か契約です。どの iPhone から出してもダメなら、その場所の電波か、キャリアの障害です。
+この記事は、iPhone を親機にして別の機器を乗せる **インターネット共有** です。Android を親機にするときは [Androidのテザリング](/articles/android-hotspot-not-working/) です。家族の iPhone では共有できるのに自分だけダメ、なら設定か契約です。どの iPhone から出してもダメなら、その場所の電波か、キャリアの障害です。
 
 ## 症状の見分け
 
