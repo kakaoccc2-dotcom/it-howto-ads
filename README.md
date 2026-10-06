@@ -65,7 +65,7 @@ draft: false
 
 SEO: 各ページの `title` / `description`、canonical、OGP、記事の `TechArticle` JSON-LD。
 
-広告: `src/components/AdSlot.astro` を `src/layouts/ArticleLayout.astro` が top / mid / bottom で呼び出します。head の `adsbygoogle.js` は既定クライアントで入ります。枠 ID がない位置はユニット未設定のスタブです。Amazon アソシエイトとは別です。
+広告: `src/components/AdSlot.astro` を `src/layouts/ArticleLayout.astro` が top / mid / bottom で呼び出します。head の `adsbygoogle.js` は既定クライアントで入ります。枠 ID がない位置は何も描画しません。Amazon アソシエイトとは別です。
 
 ## Amazonアソシエイト
 
@@ -91,7 +91,7 @@ Vercel でタグを変える場合は、Project → Settings → Environment Var
 
 あわせて `<meta name="google-adsense-account" content="ca-pub-3011430865071926">` です。これでサイト確認と Auto ads（AdSense 側で有効にした場合）が動きます。
 
-**ディスプレイ広告ユニット（`data-ad-slot`）はまだありません。** AdSense でユニットを作ったあと、枠 ID（数字）を次の変数に入れて Redeploy してください。空の `ins` を出さないため、枠 ID がない位置は「ユニット未設定」スタブのままです。
+**ディスプレイ広告ユニット（`data-ad-slot`）はまだありません。** AdSense でユニットを作ったあと、枠 ID（数字）を次の変数に入れて Redeploy してください。空の `ins` を出さないため、枠 ID がない位置はページ上に何も出しません。
 
 | 変数 | 既定 | 用途 |
 |---|---|---|
@@ -115,7 +115,7 @@ Astro の `PUBLIC_*` は **ビルド時** に埋め込まれます。
 1. AdSense でディスプレイユニットを作り、枠 ID をコピーする。
 2. Vercel → Settings → Environment Variables に `PUBLIC_ADSENSE_SLOT_TOP` などを追加する。
 3. **Redeploy**（Use existing Build Cache はオフ）。
-4. 記事 HTML で `data-ad-slot` がプレースホルダではなく数字になっていることを確認する。
+4. 記事 HTML に `data-ad-slot` の数字が出ていることを確認する。枠 ID を入れる前は、この属性自体が記事に出ません。
 
 クライアント ID を Vercel に置く必要はありません（ハードコード既定で同じ値になります）。別アカウントに切り替えるときだけ `PUBLIC_ADSENSE_CLIENT` を上書きしてください。
 
@@ -124,7 +124,7 @@ Astro の `PUBLIC_*` は **ビルド時** に埋め込まれます。
 | 変数 | 未設定時 | 有効な値がビルドに入ったとき |
 |---|---|---|
 | `PUBLIC_ADSENSE_CLIENT` | 既定 `ca-pub-3011430865071926` で head スクリプト | その値で head スクリプト |
-| `PUBLIC_ADSENSE_SLOT_*` | その位置はスタブ | 対応する `AdSlot` が `ins.adsbygoogle` + `push` |
+| `PUBLIC_ADSENSE_SLOT_*` | その位置は非表示 | 対応する `AdSlot` が `ins.adsbygoogle` + `push` |
 
 他社の広告ネットワークは入れていません。
 
@@ -134,7 +134,7 @@ Astro の `PUBLIC_*` は **ビルド時** に埋め込まれます。
 src/
   content.config.ts          # 記事コレクション（Zod）
   content/articles/          # Markdown 本文
-  components/AdSlot.astro            # 枠IDがあるときだけユニット。なければスタブ
+  components/AdSlot.astro            # 枠IDがあるときだけユニット。なければ非表示
   components/AdSenseHead.astro       # 既定 ca-pub で adsbygoogle.js
   components/AffiliateProduct.astro  # Amazon検索リンク（任意）
   layouts/ArticleLayout.astro
